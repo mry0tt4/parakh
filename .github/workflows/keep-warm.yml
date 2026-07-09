@@ -19,8 +19,12 @@ jobs:
   ping:
     runs-on: ubuntu-latest
     steps:
-      - name: Ping the app
+      - name: Ping the app (twice, 6 min apart)
         run: |
-          # generous timeout so a cold start counts as a successful wake-up
+          # two pings per run halve the effective gap, so even when GitHub's
+          # cron jitters the schedule the instance never idles past 15 min
           curl -fsS --max-time 90 --retry 2 --retry-delay 5 "$PING_URL" \
             && echo "awake" || echo "ping failed (instance may be redeploying)"
+          sleep 360
+          curl -fsS --max-time 90 --retry 2 --retry-delay 5 "$PING_URL" \
+            && echo "still awake" || echo "second ping failed"
