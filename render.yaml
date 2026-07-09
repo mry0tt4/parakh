@@ -1,0 +1,28 @@
+# Render blueprint: one free web service that runs the FastAPI backend and
+# serves the built frontend from the same origin (frontend calls /api/v1
+# relative, so no CORS or rewrites are needed).
+#
+# Deploy: Render dashboard -> New -> Blueprint -> pick this repo.
+# Free-tier note: the instance sleeps after ~15 min idle; the GitHub Actions
+# workflow .github/workflows/keep-warm.yml pings /healthz to keep it awake.
+services:
+  - type: web
+    name: parakh
+    runtime: python
+    plan: free
+    buildCommand: |
+      pip install -r backend/requirements.txt
+      cd frontend && npm ci && npm run build
+    startCommand: cd backend && uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /healthz
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.13.4
+      - key: NODE_VERSION
+        value: "22"
+      - key: PARAKH_ENVIRONMENT
+        value: production
+      - key: PARAKH_STATIC_DIR
+        value: ../frontend/dist
+      - key: PARAKH_JWT_SECRET
+        generateValue: true

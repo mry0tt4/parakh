@@ -45,6 +45,10 @@ class Settings(BaseSettings):
 
     autoseed: bool = True
 
+    # Single-service deployments (e.g. Render free tier): when set to the
+    # built frontend directory, the API also serves the SPA from "/".
+    static_dir: str = ""
+
     # -- Setu AA sandbox (EXPERIMENTAL, off by default) ----------------------
     # When all three credentials are set, the AA connector binds to the real
     # Setu sandbox instead of the synthetic mock. See docs/ARCHITECTURE.md.

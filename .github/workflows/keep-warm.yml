@@ -1,0 +1,26 @@
+# Keeps the free Render instance from sleeping (it idles out after ~15 min).
+# Pings the cheap /healthz probe every 10 minutes. GitHub cron can lag a few
+# minutes at peak times; if the instance still dozes off once in a while, the
+# next ping absorbs the cold start instead of a visitor.
+#
+# If Render assigns a different subdomain (the name "parakh" may be taken),
+# update PING_URL below to match the URL shown in the Render dashboard.
+name: keep-warm
+
+on:
+  schedule:
+    - cron: '*/10 * * * *'
+  workflow_dispatch:
+
+env:
+  PING_URL: https://parakh.onrender.com/healthz
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping the app
+        run: |
+          # generous timeout so a cold start counts as a successful wake-up
+          curl -fsS --max-time 90 --retry 2 --retry-delay 5 "$PING_URL" \
+            && echo "awake" || echo "ping failed (instance may be redeploying)"

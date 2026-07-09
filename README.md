@@ -138,6 +138,20 @@ The point of Rathore: its pillar scores alone look decent. Only the
 triangulation catches it. The point of GreenLeaf: a rejection becomes a
 pipeline instead of a dead end.
 
+## Deploy (Render, free)
+
+The repo ships a [`render.yaml`](render.yaml) blueprint: one free web service
+runs the API and serves the built frontend from the same origin.
+
+1. Render dashboard, New, Blueprint, pick this repo, deploy.
+2. Done. The instance auto-seeds the demo data on boot (the data is
+   deterministic, so restarts reproduce identical numbers).
+
+The free tier sleeps after about 15 minutes idle;
+[`.github/workflows/keep-warm.yml`](.github/workflows/keep-warm.yml) pings
+`/healthz` every 10 minutes to keep it awake. If Render assigns a subdomain
+other than `parakh.onrender.com`, update `PING_URL` in that workflow.
+
 ## Testing
 
 ```bash
