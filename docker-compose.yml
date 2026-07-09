@@ -1,0 +1,24 @@
+services:
+  backend:
+    build: ./backend
+    environment:
+      PARAKH_JWT_SECRET: ${PARAKH_JWT_SECRET:-compose-dev-secret-0123456789abcdef}
+      PARAKH_DATABASE_URL: sqlite:////data/parakh.db
+      PARAKH_CORS_ORIGINS: '["http://localhost:8080"]'
+      PARAKH_AUTOSEED: "true"
+      # Postgres instead:
+      #   PARAKH_DATABASE_URL: postgresql+psycopg://parakh:parakh@db/parakh
+    volumes:
+      - parakh-data:/data
+    ports:
+      - "8000:8000"
+
+  frontend:
+    build: ./frontend
+    depends_on:
+      - backend
+    ports:
+      - "8080:80"
+
+volumes:
+  parakh-data:

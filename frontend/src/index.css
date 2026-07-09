@@ -1,0 +1,588 @@
+@import 'tailwindcss';
+
+/* ── Parakh design tokens ──────────────────────────────────────────────
+   Paper-white institutional console. Ink text, one deep-green accent,
+   reserved amber (warn) and red (critical). BlauerNue for display and
+   UI text, IBM Plex Mono for every figure.                            */
+
+/* Self-hosted display face. Single file (Regular); the 100–900 range maps
+   every requested weight to this file so headings render the font's
+   native weight instead of a browser-synthesized bold. */
+@font-face {
+  font-family: 'BlauerNue';
+  src: url('/fonts/BlauerNue-Regular.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'CSAliceMono';
+  src: url('/fonts/CSAliceMono-Regular.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* BlauerNue draws · (middle dot) near cap height, so every text separator
+   looked superscripted — and its stroke reads thin at body sizes. Serve
+   just U+00B7 and U+2022 from a system font's BOLD cut instead — declared
+   after the main faces, these unicode-range overrides win for those two
+   characters only, giving every separator app-wide a centered, heavier dot
+   regardless of the surrounding text's own weight. */
+@font-face {
+  font-family: 'BlauerNue';
+  src:
+    local('Helvetica Neue Bold'), local('HelveticaNeue-Bold'),
+    local('Arial-BoldMT'), local('Arial Bold'),
+    local('Segoe UI Bold'), local('Segoe UI Semibold'),
+    local('Roboto Bold'), local('Roboto-Bold'),
+    local('DejaVu Sans Bold'), local('Liberation Sans Bold'),
+    local('Helvetica Neue'), local('Arial');
+  unicode-range: U+00B7, U+2022;
+  font-weight: 100 900;
+}
+@font-face {
+  font-family: 'CSAliceMono';
+  src:
+    local('Helvetica Neue Bold'), local('HelveticaNeue-Bold'),
+    local('Arial-BoldMT'), local('Arial Bold'),
+    local('Segoe UI Bold'), local('Segoe UI Semibold'),
+    local('Roboto Bold'), local('Roboto-Bold'),
+    local('DejaVu Sans Bold'), local('Liberation Sans Bold'),
+    local('Helvetica Neue'), local('Arial');
+  unicode-range: U+00B7, U+2022;
+  font-weight: 100 900;
+}
+
+@theme {
+  --font-display: 'BlauerNue', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: 'BlauerNue', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'CSAliceMono', ui-monospace, 'SF Mono', Menlo, monospace;
+
+  /* surfaces */
+  --color-paper: #f4f2ec;
+  --color-card: #ffffff;
+  --color-well: #faf9f5;
+
+  /* ink */
+  --color-ink: #1c1b17;
+  --color-ink-2: #57534a;
+  --color-ink-3: #8a8578;
+  --color-ink-4: #b3aea0;
+
+  /* hairlines */
+  --color-line: #e7e4da;
+  --color-line-2: #d8d4c6;
+
+  /* brand: deep pine green */
+  --color-pine-950: #0c1f19;
+  --color-pine-900: #10291f;
+  --color-pine-800: #143828;
+  --color-pine-700: #135c3e;
+  --color-pine-600: #107a52;
+  --color-pine-500: #199365;
+  --color-pine-100: #d9eae0;
+  --color-pine-50: #edf5f0;
+
+  /* reserved semantics */
+  --color-good: #0e7a46;
+  --color-good-bg: #e9f4ee;
+  --color-warn: #9a5b00;
+  --color-warn-bg: #faf1e0;
+  --color-crit: #b42318;
+  --color-crit-bg: #fbeceb;
+  --color-info: #2f5aa8;
+  --color-info-bg: #eaf0fa;
+}
+
+/* ── base ────────────────────────────────────────────────────────────── */
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  scroll-behavior: smooth;
+}
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+::selection {
+  background: var(--color-pine-100);
+  color: var(--color-pine-900);
+}
+
+/* figures everywhere align */
+.num {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+
+/* small-caps section labels */
+.overline-label {
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-ink-3);
+}
+
+/* subtle paper grain on the login brand panel */
+.brand-panel-texture {
+  background-image:
+    radial-gradient(rgba(255, 255, 255, 0.045) 1px, transparent 1px),
+    linear-gradient(160deg, #0c1f19 0%, #10291f 55%, #143828 100%);
+  background-size:
+    22px 22px,
+    100% 100%;
+}
+
+/* skeleton shimmer */
+@keyframes shimmer {
+  0% {
+    background-position: -400px 0;
+  }
+  100% {
+    background-position: 400px 0;
+  }
+}
+.skeleton {
+  border-radius: 4px;
+  background: linear-gradient(90deg, #ece9e0 25%, #f5f3ec 50%, #ece9e0 75%);
+  background-size: 800px 100%;
+  animation: shimmer 1.4s infinite linear;
+}
+
+/* staggered page-load reveal */
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.rise {
+  animation: rise-in 0.4s cubic-bezier(0.2, 0.7, 0.3, 1) both;
+}
+.rise-1 { animation-delay: 0.03s; }
+.rise-2 { animation-delay: 0.08s; }
+.rise-3 { animation-delay: 0.13s; }
+.rise-4 { animation-delay: 0.18s; }
+.rise-5 { animation-delay: 0.23s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .rise,
+  .skeleton {
+    animation: none;
+  }
+}
+
+/* ── cinematic brand surfaces (login panel · landing page) ───────────────
+   Aurora glows over deep pine, glass artifacts, instrument-dial motifs.
+   All motion is decorative and disabled under prefers-reduced-motion.   */
+
+.aurora-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(90px);
+  pointer-events: none;
+  will-change: transform;
+}
+.aurora-emerald {
+  background: radial-gradient(closest-side, rgba(25, 147, 101, 0.55), transparent 72%);
+  animation: aurora-drift-a 26s ease-in-out infinite alternate;
+}
+.aurora-gem {
+  background: radial-gradient(closest-side, rgba(47, 90, 168, 0.4), transparent 72%);
+  animation: aurora-drift-b 32s ease-in-out infinite alternate;
+}
+.aurora-brass {
+  background: radial-gradient(closest-side, rgba(154, 91, 0, 0.28), transparent 72%);
+  animation: aurora-drift-c 38s ease-in-out infinite alternate;
+}
+@keyframes aurora-drift-a {
+  from { transform: translate3d(-6%, -4%, 0) scale(1); }
+  to   { transform: translate3d(7%, 6%, 0) scale(1.15); }
+}
+@keyframes aurora-drift-b {
+  from { transform: translate3d(5%, 6%, 0) scale(1.1); }
+  to   { transform: translate3d(-6%, -5%, 0) scale(0.95); }
+}
+@keyframes aurora-drift-c {
+  from { transform: translate3d(0, 5%, 0) scale(1); }
+  to   { transform: translate3d(4%, -4%, 0) scale(1.12); }
+}
+
+/* frosted artifact on dark pine */
+.glass-dark {
+  background: linear-gradient(150deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.04));
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: 14px;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.08) inset,
+    0 24px 60px -24px rgba(0, 0, 0, 0.65);
+}
+
+/* slow bobbing for floating artifacts */
+.float-y { animation: float-y 7s ease-in-out infinite alternate; }
+.float-y-slow { animation: float-y 9.5s ease-in-out 0.8s infinite alternate; }
+@keyframes float-y {
+  from { transform: translateY(-4px); }
+  to   { transform: translateY(6px); }
+}
+
+/* score dial draws itself in (path must set pathLength=100) */
+.arc-draw {
+  stroke-dasharray: 100;
+  animation: arc-draw 1.5s cubic-bezier(0.3, 0.7, 0.2, 1) 0.4s both;
+}
+@keyframes arc-draw {
+  from { stroke-dashoffset: 100; }
+  to   { stroke-dashoffset: 32.6; } /* 704 on the 300–900 dial */
+}
+
+/* ledger tape marquee */
+.tape-track {
+  display: flex;
+  width: max-content;
+  animation: tape-scroll 46s linear infinite;
+}
+@keyframes tape-scroll {
+  to { transform: translateX(-50%); }
+}
+
+/* kinetic gradient text */
+.text-aurora {
+  background: linear-gradient(100deg, #7fd4ac 0%, #34d399 28%, #d9eae0 52%, #7fd4ac 78%, #34d399 100%);
+  background-size: 220% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: aurora-sheen 7s linear infinite;
+}
+@keyframes aurora-sheen {
+  to { background-position: 220% center; }
+}
+
+/* scroll-triggered reveal (Landing adds .in via IntersectionObserver) */
+.reveal {
+  opacity: 0;
+  transform: translateY(22px);
+  transition:
+    opacity 0.7s ease,
+    transform 0.7s cubic-bezier(0.2, 0.7, 0.3, 1);
+}
+.reveal.in { opacity: 1; transform: none; }
+.reveal.d1 { transition-delay: 0.08s; }
+.reveal.d2 { transition-delay: 0.16s; }
+.reveal.d3 { transition-delay: 0.24s; }
+.reveal.d4 { transition-delay: 0.32s; }
+
+/* bento card stage: emerald glow bleeding from the top + fine dot grid */
+.bento-tex {
+  background-image:
+    radial-gradient(ellipse 110% 90% at 50% -20%, rgba(25, 147, 101, 0.2), transparent 62%),
+    radial-gradient(ellipse 60% 50% at 85% 110%, rgba(47, 90, 168, 0.12), transparent 70%),
+    radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size:
+    100% 100%,
+    100% 100%,
+    16px 16px;
+}
+
+/* fine blueprint grid for dark heroes, faded at the edges */
+.grid-lines {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 56px 56px;
+}
+.grid-lines,
+.grid-mask {
+  mask-image: radial-gradient(ellipse 90% 70% at 50% 38%, black 30%, transparent 78%);
+  -webkit-mask-image: radial-gradient(ellipse 90% 70% at 50% 38%, black 30%, transparent 78%);
+}
+
+/* grid droplets — cells lighting up like rain on the blueprint grid */
+.cell-drop {
+  width: 56px;
+  height: 56px;
+  background: radial-gradient(circle at 50% 50%, rgba(127, 212, 172, 0.18), rgba(127, 212, 172, 0.03) 78%);
+  opacity: 0;
+  animation: cell-drop 3.8s ease-in-out both;
+  will-change: opacity, transform;
+}
+@keyframes cell-drop {
+  0% { opacity: 0; transform: scale(0.65); }
+  22% { opacity: 1; transform: scale(1); }
+  65% { opacity: 0.45; }
+  100% { opacity: 0; transform: scale(1); }
+}
+
+/* ── graphic micro-interactions (replay on each hover of the .group card) ── */
+
+.gfx-pop,
+.gfx-bar,
+.gfx-fill,
+.gfx-wave {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.group:hover .gfx-pop {
+  animation: gfx-pop 0.45s cubic-bezier(0.34, 1.4, 0.5, 1) both;
+}
+@keyframes gfx-pop {
+  0% { opacity: 0; transform: scale(0.55); }
+  70% { opacity: 1; transform: scale(1.06); }
+  100% { opacity: 1; transform: scale(1); }
+}
+.group:hover .gfx-bar {
+  transform-origin: bottom;
+  animation: gfx-bar 0.55s cubic-bezier(0.3, 0.9, 0.3, 1) both;
+}
+@keyframes gfx-bar {
+  from { transform: scaleY(0.1); }
+  to { transform: scaleY(1); }
+}
+.group:hover .gfx-fill {
+  transform-origin: left;
+  animation: gfx-fill 0.7s cubic-bezier(0.3, 0.8, 0.3, 1) both;
+}
+@keyframes gfx-fill {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+/* stroke draw — element must set pathLength={300} */
+.group:hover .gfx-draw {
+  stroke-dasharray: 300;
+  stroke-dashoffset: 300;
+  animation: gfx-draw 1.1s cubic-bezier(0.3, 0.7, 0.2, 1) forwards;
+}
+@keyframes gfx-draw {
+  to { stroke-dashoffset: 0; }
+}
+/* score dial re-draw — element carries dasharray 100 / final offset 32.6 */
+.group:hover .gfx-dial {
+  animation: gfx-dial 1s cubic-bezier(0.3, 0.7, 0.2, 1) forwards;
+}
+@keyframes gfx-dial {
+  from { stroke-dashoffset: 100; }
+  to { stroke-dashoffset: 32.6; }
+}
+/* gentle wave while hovered (stagger with animation-delay) */
+.group:hover .gfx-wave {
+  animation: gfx-wave 1.3s ease-in-out infinite;
+}
+@keyframes gfx-wave {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3.5px); }
+}
+/* stagger helpers */
+.gfx-d1 { animation-delay: 0.06s; }
+.gfx-d2 { animation-delay: 0.14s; }
+.gfx-d3 { animation-delay: 0.22s; }
+.gfx-d4 { animation-delay: 0.3s; }
+.gfx-d5 { animation-delay: 0.38s; }
+.gfx-d6 { animation-delay: 0.46s; }
+
+/* film grain */
+.noise::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aurora-emerald,
+  .aurora-gem,
+  .aurora-brass,
+  .float-y,
+  .float-y-slow,
+  .tape-track,
+  .text-aurora,
+  .cell-drop,
+  .group:hover .gfx-pop,
+  .group:hover .gfx-bar,
+  .group:hover .gfx-fill,
+  .group:hover .gfx-draw,
+  .group:hover .gfx-dial,
+  .group:hover .gfx-wave {
+    animation: none;
+  }
+  .arc-draw {
+    animation: none;
+    stroke-dashoffset: 32.6;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* recharts chrome overrides */
+.recharts-cartesian-axis-tick text {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  fill: #8a8578;
+}
+.recharts-legend-item-text {
+  font-size: 11.5px;
+  color: var(--color-ink-2) !important;
+}
+
+/* ── credit memo prose ───────────────────────────────────────────────── */
+
+.memo-prose {
+  font-size: 13.5px;
+  line-height: 1.65;
+  color: var(--color-ink);
+  max-width: 78ch;
+}
+.memo-prose h1 {
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1.25;
+  margin: 0 0 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--color-line);
+}
+.memo-prose h2 {
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 600;
+  margin: 26px 0 8px;
+}
+.memo-prose h3 {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-ink-2);
+  margin: 20px 0 6px;
+}
+.memo-prose p {
+  margin: 0 0 10px;
+}
+.memo-prose ul,
+.memo-prose ol {
+  margin: 0 0 10px;
+  padding-left: 20px;
+}
+.memo-prose ul {
+  list-style: disc;
+}
+.memo-prose ol {
+  list-style: decimal;
+}
+.memo-prose li {
+  margin: 3px 0;
+}
+.memo-prose strong {
+  font-weight: 700;
+}
+.memo-prose code {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  background: var(--color-well);
+  border: 1px solid var(--color-line);
+  border-radius: 3px;
+  padding: 0 4px;
+}
+.memo-prose table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 12px 0 16px;
+  font-size: 12.5px;
+}
+.memo-prose th {
+  text-align: left;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-ink-3);
+  border-bottom: 1px solid var(--color-line-2);
+  padding: 6px 10px;
+}
+.memo-prose td {
+  border-bottom: 1px solid var(--color-line);
+  padding: 6px 10px;
+  font-variant-numeric: tabular-nums;
+}
+.memo-prose blockquote {
+  margin: 12px 0;
+  padding: 8px 14px;
+  border-left: 3px solid var(--color-pine-600);
+  background: var(--color-well);
+  color: var(--color-ink-2);
+}
+.memo-prose hr {
+  border: none;
+  border-top: 1px solid var(--color-line);
+  margin: 20px 0;
+}
+
+/* ── print (MSME Health Card) ────────────────────────────────────────── */
+
+@page {
+  margin: 12mm;
+}
+
+@media print {
+  body {
+    background: #ffffff;
+  }
+  /* keep the pine masthead, seals and bars in the PDF */
+  * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .no-print {
+    display: none !important;
+  }
+  /* the document wrapper loses screen padding; the card sheds its frame */
+  .print-doc,
+  .print-doc > div {
+    background: #ffffff;
+    max-width: none;
+    padding: 0;
+    margin: 0;
+  }
+  .print-card {
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+  }
+  .avoid-break {
+    break-inside: avoid;
+  }
+  /* entry animations must not leave content invisible on paper */
+  .rise {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
