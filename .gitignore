@@ -18,3 +18,4 @@ dist/
 # internal material, not part of the public repo
 pitch/
 docs/DEMO-SCRIPT.md
+e2e/screenshots.py
