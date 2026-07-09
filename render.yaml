@@ -7,7 +7,7 @@
 # workflow .github/workflows/keep-warm.yml pings /healthz to keep it awake.
 services:
   - type: web
-    name: parakh
+    name: parakh-idbi
     runtime: python
     plan: free
     buildCommand: |

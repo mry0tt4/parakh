@@ -147,10 +147,12 @@ runs the API and serves the built frontend from the same origin.
 2. Done. The instance auto-seeds the demo data on boot (the data is
    deterministic, so restarts reproduce identical numbers).
 
+Live demo: **https://parakh-idbi.onrender.com**
+
 The free tier sleeps after about 15 minutes idle;
 [`.github/workflows/keep-warm.yml`](.github/workflows/keep-warm.yml) pings
 `/healthz` every 10 minutes to keep it awake. If Render assigns a subdomain
-other than `parakh.onrender.com`, update `PING_URL` in that workflow.
+other than `parakh-idbi.onrender.com`, update `PING_URL` in that workflow.
 
 ## Testing
 
